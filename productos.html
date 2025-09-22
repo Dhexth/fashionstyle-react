@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FashionStyle - Productos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">Fashion<span>Style</span></a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="productos.html" class="active">Productos</a></li>
+                    <li><a href="nosotros.html">Nosotros</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <div class="user-actions">
+                    <a href="login.html" class="btn-outline">Iniciar Sesión</a>
+                    <a href="registro.html" class="btn">Registrarse</a>
+                </div>
+                <div class="cart-icon" id="cartIcon">
+                    🛒 <span class="cart-count">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section>
+            <h1 class="section-title">Nuestra Colección</h1>
+            
+            <!-- Filtros -->
+            <div class="filters">
+                <select id="categoryFilter">
+                    <option value="">Todas las categorías</option>
+                    <option value="ropa">Ropa</option>
+                    <option value="accesorios">Accesorios</option>
+                    <option value="zapatos">Zapatos</option>
+                </select>
+                <select id="priceFilter">
+                    <option value="">Ordenar por precio</option>
+                    <option value="asc">Menor a mayor</option>
+                    <option value="desc">Mayor a menor</option>
+                </select>
+            </div>
+
+            <!-- Grid de productos -->
+            <div class="products-grid">
+                <div class="product-card" data-category="ropa" data-price="19990">
+                    <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Polera Básica Negra" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Polera Básica Negra</h3>
+                        <p class="product-price">$19.990</p>
+                        <button class="add-to-cart">Agregar al Carrito</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-category="ropa" data-price="39990">
+                    <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Jeans Slim Fit" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Jeans Slim Fit</h3>
+                        <p class="product-price">$39.990</p>
+                        <button class="add-to-cart">Agregar al Carrito</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-category="ropa" data-price="45990">
+                    <img src="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Vestido Floral" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Vestido Floral</h3>
+                        <p class="product-price">$45.990</p>
+                        <button class="add-to-cart">Agregar al Carrito</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-category="accesorios" data-price="89990">
+                    <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Chaqueta de Cuero" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Chaqueta de Cuero</h3>
+                        <p class="product-price">$89.990</p>
+                        <button class="add-to-cart">Agregar al Carrito</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-category="zapatos" data-price="59990">
+                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Zapatillas Urbanas" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Zapatillas Urbanas</h3>
+                        <p class="product-price">$59.990</p>
+                        <button class="add-to-cart">Agregar al Carrito</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-category="ropa" data-price="79990">
+                    <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Abrigo Invernal" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Abrigo Invernal</h3>
+                        <p class="product-price">$79.990</p>
+                        <button class="add-to-cart">Agregar al Carrito</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>FashionStyle</h3>
+                    <p>Tu tienda de confianza para encontrar las últimas tendencias en moda a precios increíbles.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul>
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="productos.html">Productos</a></li>
+                        <li><a href="nosotros.html">Nosotros</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <ul>
+                        <li>📞 +1 234 567 8900</li>
+                        <li>✉️ info@fashionstyle.com</li>
+                        <li>📍 Calle Principal 123, Ciudad</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Newsletter</h3>
+                    <p>Recibe nuestras últimas novedades y ofertas exclusivas.</p>
+                    <div class="subscribe-form">
+                        <input type="email" placeholder="Tu correo electrónico">
+                        <button>Suscribir</button>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 FashionStyle - Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
