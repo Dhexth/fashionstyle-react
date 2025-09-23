@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FashionStyle - Inicio</title>
-    <link rel="stylesheet" href="css/styles.css">  <!-- Cambiado -->
+    <title>FashionStyle - Blog</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <script src="js/script.js"></script>  <!-- Cambiado -->
     <header>
         <div class="container header-container">
             <a href="index.html" class="logo">Fashion<span>Style</span></a>
             <nav>
                 <ul>
-                    <li><a href="index.html" class="active">Inicio</a></li>
+                    <li><a href="index.html">Inicio</a></li>
                     <li><a href="productos.html">Productos</a></li>
                     <li><a href="nosotros.html">Nosotros</a></li>
-                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="blog.html" class="active">Blog</a></li>
                     <li><a href="contacto.html">Contacto</a></li>
                 </ul>
             </nav>
@@ -34,42 +33,35 @@
 
     <section class="hero">
         <div class="hero-content">
-            <h1>Moda para todos los estilos</h1>
-            <p>Descubre las últimas tendencias en moda y encuentra tu estilo único con nuestra colección exclusiva.</p>
-            <a href="productos.html" class="btn">Ver Colección</a>
+            <h1>Blog de Moda FashionStyle</h1>
+            <p>Descubre las últimas tendencias, consejos de estilo y novedades del mundo de la moda</p>
         </div>
     </section>
 
-    <section id="products" class="container">
-        <h2 class="section-title">Productos Destacados</h2>
-        <div class="products-grid">
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Polera Básica Blanca" class="product-image">
-                <div class="product-info">
-                    <h3 class="product-title">Polera Básica Blanca</h3>
-                    <p class="product-price">$19.990</p>
-                    <button class="add-to-cart">Agregar al Carrito</button>
+    <section id="blog" class="container">
+        <h2 class="section-title">Últimos Artículos</h2>
+        <div class="blog-posts">
+            <!-- Blog 1 -->
+            <article class="blog-post">
+                <img src="img/blog/blog1.jpg" alt="Tendencias Verano 2024" class="blog-image">
+                <div class="blog-content">
+                    <h2>Tendencias de Verano 2024: Lo que viene en moda</h2>
+                    <p class="blog-date">15 Marzo 2024</p>
+                    <p class="blog-excerpt">Descubre las prendas, colores y estilos que dominarán esta temporada de verano. Desde los tonos vibrantes hasta los cortes innovadores, te contamos todo lo que necesitas saber para estar a la moda.</p>
+                    <a href="blog1.html" class="read-more">Leer más →</a>
                 </div>
-            </div>
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Jeans Slim Fit" class="product-image">
-                <div class="product-info">
-                    <h3 class="product-title">Jeans Slim Fit</h3>
-                    <p class="product-price">$39.990</p>
-                    <button class="add-to-cart">Agregar al Carrito</button>
+            </article>
+
+            <!-- Blog 2 -->
+            <article class="blog-post">
+                <img src="img/blog/blog2.jpg" alt="Guía de colores" class="blog-image">
+                <div class="blog-content">
+                    <h2>Guía Definitiva: Cómo Combinar Colores en tu Vestuario</h2>
+                    <p class="blog-date">8 Marzo 2024</p>
+                    <p class="blog-excerpt">Aprende los principios básicos de la teoría del color y cómo aplicarlos a tu guardarropa. Crear outfits armoniosos nunca fue tan fácil con nuestra guía práctica.</p>
+                    <a href="blog2.html" class="read-more">Leer más →</a>
                 </div>
-            </div>
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Vestido Floral" class="product-image">
-                <div class="product-info">
-                    <h3 class="product-title">Vestido Floral</h3>
-                    <p class="product-price">$45.990</p>
-                    <button class="add-to-cart">Agregar al Carrito</button>
-                </div>
-            </div>
-        </div>
-        <div class="text-center">
-            <a href="productos.html" class="btn">Ver Todos los Productos</a>
+            </article>
         </div>
     </section>
 
@@ -103,7 +95,7 @@
                     <p>Recibe nuestras últimas novedades y ofertas exclusivas.</p>
                     <div class="subscribe-form">
                         <input type="email" placeholder="Tu correo electrónico">
-                        <button>Suscribir</button>
+                        <button type="submit">Suscribir</button>
                     </div>
                 </div>
             </div>
@@ -113,6 +105,6 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
