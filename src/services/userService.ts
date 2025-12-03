@@ -1,120 +1,112 @@
-import { User, UserWithPassword, LoginData, RegisterData, AuthResponse } from "../types/user";
-
-/**
- * =====================================================
- * Servicio de autenticación y gestión de usuario
- * =====================================================
- *  - Ahora guarda múltiples usuarios en localStorage
- *  - Verifica credenciales contra usuarios registrados
- * =====================================================
- */
+import { User, LoginData, RegisterData, AuthResponse } from "../types/user";
 
 // Claves de almacenamiento
 const USER_KEY = "auth_user";
 const TOKEN_KEY = "auth_token";
-const USERS_KEY = "registered_users";
+const API_BASE_URL = "http://localhost:8080/api/v1";
 
 /**
- * Obtiene la lista de usuarios registrados (con password)
+ * =====================================================
+ * Servicio de autenticación CONECTADO AL BACKEND SPRING BOOT
+ * =====================================================
+ *  - Ahora usa tu backend real en lugar de localStorage
+ *  - Las contraseñas se validan en el servidor
+ * =====================================================
  */
-function getRegisteredUsers(): UserWithPassword[] {
-  const raw = localStorage.getItem(USERS_KEY);
-  if (!raw) return [];
-  try {
-    return JSON.parse(raw) as UserWithPassword[];
-  } catch {
-    return [];
+
+/**
+ * Función para hacer peticiones al backend
+ */
+async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  const url = `${API_BASE_URL}${endpoint}`;
+  console.log('🔗 Haciendo petición a:', url);
+  
+  const response = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+    ...options,
+  });
+
+  const responseData = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseData.message || `Error ${response.status}`);
   }
+
+  return responseData;
 }
 
 /**
- * Guarda un nuevo usuario en la lista de registrados
- */
-function saveRegisteredUser(user: User, password: string) {
-  const users = getRegisteredUsers();
-  
-  // Verificar si el usuario ya existe
-  if (users.some(u => u.email === user.email)) {
-    throw new Error("El usuario ya existe");
-  }
-  
-  // Crear usuario con password para almacenamiento
-  const userWithPassword: UserWithPassword = {
-    ...user,
-    password: password // ⚠️ Solo para simulación - en producción usar hash
-  };
-  
-  users.push(userWithPassword);
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-}
-
-/**
- * Verifica credenciales contra usuarios registrados
- */
-function verifyCredentials(email: string, password: string): User | null {
-  const users = getRegisteredUsers();
-  const userWithPassword = users.find(u => u.email === email && u.password === password);
-  
-  if (userWithPassword) {
-    // Remover la contraseña del objeto que devolvemos
-    const { password: _, ...user } = userWithPassword;
-    return user;
-  }
-  return null;
-}
-
-/**
- * Simula la autenticación (login).
- * Ahora verifica contra usuarios registrados
+ * Login REAL con el backend Spring Boot
  */
 export async function login(data: LoginData): Promise<AuthResponse> {
-  await new Promise((resolve) => setTimeout(resolve, 800));
+  try {
+    console.log('📨 Intentando login con backend:', data.email);
+    
+    const response = await apiRequest<{ 
+      success: boolean; 
+      user: User; 
+      token: string;
+      message?: string;
+    }>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: data.email,
+        password: data.password
+      }),
+    });
 
-  // Verificar contra usuarios registrados
-  const user = verifyCredentials(data.email, data.password);
-  
-  if (user) {
-    const token = "auth-token-" + new Date().getTime();
-    saveSession(user, token);
-    return { success: true, user, token };
+    if (response.success) {
+      console.log('Login exitoso con backend:', response.user);
+      saveSession(response.user, response.token);
+      return { success: true, user: response.user, token: response.token };
+    } else {
+      throw new Error(response.message || "Error en el servidor");
+    }
+  } catch (error: any) {
+    console.error('Error en login con backend:', error);
+    throw new Error(error.message || "No se pudo conectar con el servidor");
   }
-
-  // Si las credenciales no son válidas:
-  throw new Error("Correo o contraseña incorrectos");
 }
 
 /**
- * Simula el registro de usuario.
- * Ahora guarda el usuario para futuros logins
+ * Registro REAL con el backend Spring Boot
  */
 export async function register(data: RegisterData): Promise<AuthResponse> {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  try {
+    console.log('📨 Intentando registro con backend:', data.email);
+    
+    const response = await apiRequest<{ 
+      success: boolean; 
+      user: User; 
+      token: string;
+      message?: string;
+    }>('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({
+        name: data.name,
+        email: data.email,
+        password: data.password
+      }),
+    });
 
-  // Verificar si el usuario ya existe
-  const existingUsers = getRegisteredUsers();
-  if (existingUsers.some(u => u.email === data.email)) {
-    throw new Error("El usuario ya existe");
+    if (response.success) {
+      console.log('✅ Registro exitoso con backend:', response.user);
+      saveSession(response.user, response.token);
+      return { success: true, user: response.user, token: response.token };
+    } else {
+      throw new Error(response.message || "Error en el servidor");
+    }
+  } catch (error: any) {
+    console.error('Error en registro con backend:', error);
+    throw new Error(error.message || "No se pudo conectar con el servidor");
   }
-
-  // Crear nuevo usuario
-  const user: User = {
-    id: Math.random().toString(36).substring(2, 9),
-    name: data.name,
-    email: data.email,
-    role: "cliente",
-  };
-
-  // Guardar en la lista de usuarios registrados
-  saveRegisteredUser(user, data.password);
-
-  const token = "auth-token-" + new Date().getTime();
-  saveSession(user, token);
-
-  return { success: true, user, token };
 }
 
 /**
- * Guarda la sesión actual en localStorage
+ * Guarda la sesión en localStorage (igual que antes)
  */
 export function saveSession(user: User, token: string) {
   localStorage.setItem(USER_KEY, JSON.stringify(user));
@@ -159,30 +151,22 @@ export function isAuthenticated(): boolean {
 }
 
 /**
- * Simula verificación de token en backend
+ * Verificación de token (puede llamar al backend si quieres)
  */
 export async function verifyToken(token: string): Promise<boolean> {
+  // Por ahora sigue siendo local, pero puedes implementar verificación con backend
   await new Promise((resolve) => setTimeout(resolve, 300));
   return token.startsWith("auth-token-");
 }
 
 /**
- * Función para inicializar usuario demo
+ * Función auxiliar para obtener el ID del usuario como número (para el backend)
  */
-function initializeDemoUser() {
-  const users = getRegisteredUsers();
-  const demoUserExists = users.some(u => u.email === "demo@tienda.cl");
-  
-  if (!demoUserExists) {
-    const demoUser: User = {
-      id: "demo-1",
-      name: "Usuario Demo",
-      email: "demo@tienda.cl",
-      role: "cliente",
-    };
-    saveRegisteredUser(demoUser, "123456");
+export function getCurrentUserId(): number | null {
+  const user = getCurrentUser();
+  if (user && user.id) {
+    // Convierte el ID string a número para el backend Spring Boot
+    return parseInt(user.id);
   }
+  return null;
 }
-
-// Inicializar usuario demo al cargar el servicio
-initializeDemoUser();
