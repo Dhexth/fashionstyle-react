@@ -1,3 +1,7 @@
-export function formatPrice(n: number) {
-  return n.toLocaleString("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 });
-}
+export const formatPrice = (price: number): string => {
+  return new Intl.NumberFormat("es-CL", {
+    style: "currency",
+    currency: "CLP",
+    minimumFractionDigits: 0,
+  }).format(price);
+};

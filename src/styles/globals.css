@@ -1,12 +1,18 @@
+/* =====================================================
+   VARIABLES
+===================================================== */
 :root {
   --primary: #3a86ff;
   --secondary: #ff006e;
 }
 
+/* =====================================================
+   BODY GENERAL
+===================================================== */
 body {
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   background-color: #ffffff;
-  color: #000000;
+  color: #212529;
   transition: background-color 0.3s ease, color 0.3s ease;
   padding-top: 80px;
 }
@@ -16,29 +22,168 @@ body.dark {
   color: #f1f1f1;
 }
 
+/* =====================================================
+   ADMIN LAYOUT
+===================================================== */
+.admin-content {
+  background-color: transparent;
+  color: inherit;
+}
+
+/* =====================================================
+   SIDEBAR ADMIN
+===================================================== */
+.admin-sidebar {
+  width: 250px;
+  min-height: 100vh;
+  background-color: #ffffff;
+  color: #212529;
+  border-right: 1px solid #ddd;
+}
+
+.admin-sidebar a {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.admin-sidebar a.active {
+  color: var(--primary);
+}
+
+/* sidebar dark */
+body.dark .admin-sidebar {
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+  border-right: 1px solid #333;
+}
+
+/* =====================================================
+   TEXTOS ADMIN
+===================================================== */
+.admin-content h1,
+.admin-content h2,
+.admin-content h3,
+.admin-content p,
+.admin-content label {
+  color: inherit;
+}
+
+/* =====================================================
+   FORMULARIOS (FIX DEFINITIVO)
+===================================================== */
+.form-control,
+select {
+  background-color: #ffffff;
+  color: #212529;
+  border-color: #ced4da;
+}
+
+.form-control:focus,
+select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.2rem rgba(58, 134, 255, 0.25);
+}
+
+/* DARK MODE FORMULARIOS */
+body.dark .form-control,
+body.dark select {
+  background-color: #2a2a2a;
+  color: #ffffff;
+  border-color: #444;
+}
+
+body.dark .form-control::placeholder {
+  color: #aaaaaa;
+}
+
+/* =====================================================
+   TABLAS (PROBLEMA DE LA IMAGEN SOLUCIONADO)
+===================================================== */
+.table {
+  background-color: #ffffff;
+  color: #212529;
+}
+
+.table th,
+.table td {
+  background-color: #ffffff;
+  color: #212529;
+  border-color: #dee2e6;
+}
+
+/* DARK MODE TABLAS */
+body.dark .table {
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+}
+
+body.dark .table th,
+body.dark .table td {
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+  border-color: #333;
+}
+
+body.dark .table thead th {
+  background-color: #222;
+  color: #ffffff;
+}
+
+/* =====================================================
+   BOTONES
+===================================================== */
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-primary:hover {
+  background-color: #005be1;
+  border-color: #005be1;
+}
+
+body.dark .btn-outline-primary {
+  color: #9ad0ff;
+  border-color: #9ad0ff;
+}
+
+body.dark .btn-outline-primary:hover {
+  background-color: #3a86ff;
+  color: #fff;
+}
+
+/* =====================================================
+   CARDS
+===================================================== */
+.card {
+  background-color: #ffffff;
+  color: #212529;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
 body.dark .card {
   background-color: #1e1e1e;
   color: #e0e0e0;
   border-color: #333;
 }
 
-body.dark .btn-outline-secondary {
-  color: #f1f1f1;
-  border-color: #aaa;
+/* =====================================================
+   LINKS
+===================================================== */
+a {
+  color: var(--primary);
+  text-decoration: none;
 }
 
 body.dark a {
   color: #9ad0ff;
 }
 
-.fixed-top {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1030;
-}
-
+/* =====================================================
+   IMÁGENES
+===================================================== */
 .product-image {
   width: 100%;
   height: 220px;
@@ -46,6 +191,7 @@ body.dark a {
   border-radius: 6px;
 }
 
-.card {
-  border-radius: 10px;
+img {
+  max-width: 100%;
+  height: auto;
 }

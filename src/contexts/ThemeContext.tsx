@@ -1,3 +1,4 @@
+// src/contexts/ThemeContext.tsx
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
 type Theme = "light" | "dark";
@@ -28,8 +29,26 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
+    // 1. Actualizar el atributo data-bs-theme en html (para Bootstrap 5)
+    document.documentElement.setAttribute('data-bs-theme', theme);
+    
+    // 2. También mantener las clases en body (para compatibilidad con tu CSS actual)
     document.body.classList.remove("light", "dark");
     document.body.classList.add(theme);
+    
+    // 3. Forzar actualización de componentes Bootstrap
+    // Este truco hace que Bootstrap recalcule los estilos
+    const forceRefresh = () => {
+      const originalTheme = document.documentElement.getAttribute('data-bs-theme');
+      document.documentElement.setAttribute('data-bs-theme', '');
+      setTimeout(() => {
+        document.documentElement.setAttribute('data-bs-theme', originalTheme || 'light');
+      }, 10);
+    };
+    
+    // Ejecutar después de un pequeño delay para asegurar que el DOM se actualizó
+    setTimeout(forceRefresh, 50);
+    
   }, [theme]);
 
   return (

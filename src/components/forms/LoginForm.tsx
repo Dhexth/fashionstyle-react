@@ -1,46 +1,82 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useUser } from "../../contexts/UserContext";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
-const schema = z.object({
-  email: z.string().email("Correo inválido"),
-  password: z.string().min(6, "Min 6 caracteres")
-});
-type Form = z.infer<typeof schema>;
+export default function LoginForm() {
+  const { signIn } = useAuth();
+  const navigate = useNavigate();
 
-export default function LoginForm(){
-  const { loginUser } = useUser();
-  const { register, handleSubmit, formState: { errors } } = useForm<Form>({ resolver: zodResolver(schema) });
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  async function onSubmit(data: Form){
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
     try {
-      await loginUser(data.email, data.password);
-      alert("Inicio de sesión exitoso");
-    } catch (error) {
-      // MANEJO DE ERROR CORREGIDO:
-      if (error instanceof Error) {
-        alert("Error: " + error.message);
-      } else {
-        alert("Error desconocido en el inicio de sesión");
-      }
+      await signIn(form.email, form.password);
+      navigate("/");
+    } catch (err: any) {
+      setError(err.message || "Credenciales incorrectas");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit}>
+      {error && (
+        <div className="alert alert-danger alert-dismissible fade show" role="alert">
+          {error}
+          <button 
+            type="button" 
+            className="btn-close" 
+            onClick={() => setError(null)}
+            aria-label="Close"
+          ></button>
+        </div>
+      )}
+
       <div className="mb-3">
-        <label className="form-label">Correo</label>
-        <input className="form-control" {...register("email")} />
-        {errors.email && <small className="text-danger">{errors.email.message}</small>}
+        <label className="form-label">Correo electrónico</label>
+        <input 
+          type="email" 
+          name="email" 
+          className="form-control" 
+          value={form.email} 
+          onChange={handleChange} 
+          required 
+          disabled={loading}
+        />
       </div>
+
       <div className="mb-3">
         <label className="form-label">Contraseña</label>
-        <input type="password" className="form-control" {...register("password")} />
-        {errors.password && <small className="text-danger">{errors.password.message}</small>}
+        <input 
+          type="password" 
+          name="password" 
+          className="form-control" 
+          value={form.password} 
+          onChange={handleChange} 
+          required 
+          disabled={loading}
+        />
       </div>
-      <button className="btn btn-primary">Entrar</button>
+
+      <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+        {loading ? (
+          <>
+            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Iniciando sesión...
+          </>
+        ) : "Iniciar sesión"}
+      </button>
     </form>
   );
 }

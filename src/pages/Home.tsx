@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchProducts } from "../services/productService";
+import { fetchProducts } from "../services/productServiceApi";
 import ProductGrid from "../components/product/ProductGrid";
 import { Product } from "../types/product";
 import { Link } from "react-router-dom";

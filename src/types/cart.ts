@@ -1,5 +1,9 @@
-import { Product } from "./product";
+ import { Product } from "./product";
 
-export interface CartItem extends Product {
-  quantity: number;
-}
+
+
+  export interface CartItem extends Product {
+
+    quantity: number;
+
+  }

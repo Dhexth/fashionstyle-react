@@ -1,12 +1,12 @@
 export interface User {
   id: string;
+  run: string;
   name: string;
+  lastName: string;
   email: string;
-  role: "admin" | "cliente";
-}
-
-export interface UserWithPassword extends User {
-  password: string; // Solo para almacenamiento interno
+  password?: string;
+  role: 'ADMIN' | 'CLIENTE' | string;
+  isAuthenticated?: boolean;
 }
 
 export interface LoginData {
@@ -15,13 +15,21 @@ export interface LoginData {
 }
 
 export interface RegisterData {
+  run: string;
   name: string;
+  lastName: string;
   email: string;
   password: string;
+  role?: string;
 }
 
 export interface AuthResponse {
-  success: boolean;
   user: User;
-  token: string;
+  token?: string;
+}
+
+export interface ApiError {
+  message: string;
+  status?: number;
+  timestamp?: string;
 }

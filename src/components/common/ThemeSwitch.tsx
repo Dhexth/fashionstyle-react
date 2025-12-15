@@ -1,3 +1,4 @@
+// src/components/common/ThemeSwitch.tsx
 import React from "react";
 import { useTheme } from "../../contexts/ThemeContext";
 
@@ -8,20 +9,23 @@ export default function ThemeSwitch() {
     <button
       className={`btn btn-sm d-flex align-items-center ${
         theme === "light" 
-          ? "btn-dark text-white" 
-          : "btn-dark text-primary"
+          ? "btn-outline-dark" 
+          : "btn-outline-light"
       }`}
       onClick={toggleTheme}
-      title="Cambiar tema"
+      title={theme === "light" ? "Cambiar a tema oscuro" : "Cambiar a tema claro"}
       style={{ gap: 6 }}
+      aria-label="Cambiar tema"
     >
       {theme === "light" ? (
         <>
-           <span>Oscuro</span>
+          <i className="bi bi-moon"></i>
+          <span className="d-none d-md-inline">Oscuro</span>
         </>
       ) : (
         <>
-           <span>Claro</span>
+          <i className="bi bi-sun"></i>
+          <span className="d-none d-md-inline">Claro</span>
         </>
       )}
     </button>

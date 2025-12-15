@@ -1,6 +1,7 @@
 import React from "react";
 import { useCart } from "../../contexts/CartContext";
 import { formatPrice } from "../../utils/formatPrice";
+import { cartApi } from "../../services/cartServiceApi"; // Importamos la API
 
 export default function CartModal({
   onClose,
@@ -9,16 +10,45 @@ export default function CartModal({
 }) {
   const { state, dispatch } = useCart();
 
-  const handleRemove = (id: string) => {
-    dispatch({ type: "REMOVE", payload: id });
+  // 🟢 ELIMINAR: Borra en DB y luego en React
+  const handleRemove = async (id: string) => {
+    try {
+      await cartApi.removeItem(id);
+      dispatch({ type: "REMOVE", payload: id });
+    } catch (e) {
+      console.error("Error al eliminar de la DB", e);
+    }
   };
 
-  const updateQty = (id: string, qty: number) => {
-    if (qty <= 0) {
+  // 🟢 ACTUALIZAR CANTIDAD (+ y -): Sincroniza con DB
+  const updateQty = async (id: string, currentQty: number, delta: number) => {
+    const newQty = currentQty + delta;
+    
+    if (newQty <= 0) {
       handleRemove(id);
       return;
     }
-    dispatch({ type: "UPDATE_QTY", payload: { id, qty } });
+
+    try {
+      // 1. Intentamos actualizar en MySQL
+      await cartApi.updateQty(id, newQty);
+      // 2. Si tiene éxito, actualizamos la pantalla
+      dispatch({ type: "UPDATE_QTY", payload: { id, qty: newQty } });
+    } catch (e) {
+      alert("No se pudo actualizar la cantidad en el servidor");
+    }
+  };
+
+  // 🟢 VACIAR CARRITO: Limpia MySQL por completo
+  const handleClearAll = async () => {
+    if (window.confirm("¿Estás seguro de que quieres vaciar el carrito?")) {
+      try {
+        await cartApi.clearCart(); // Llama al endpoint /clear de tu Java
+        dispatch({ type: "CLEAR" });
+      } catch (e) {
+        alert("Error al vaciar la base de datos");
+      }
+    }
   };
 
   const shippingCost = state.total > 0 ? 4000 : 0;
@@ -40,8 +70,7 @@ export default function CartModal({
   }
 
   return (
-    <div className="card p-0">
-      {/* Header */}
+    <div className="card p-0 shadow-lg">
       <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
         <h5 className="mb-0">
           <i className="bi bi-cart3 me-2"></i>
@@ -52,19 +81,13 @@ export default function CartModal({
         </button>
       </div>
 
-      {/* Lista de productos */}
       <div style={{ maxHeight: 400, overflowY: "auto" }} className="p-3">
         {state.items.map((item) => (
           <div key={item.id} className="d-flex gap-3 align-items-center mb-3 border-bottom pb-3">
             <img 
               src={item.image} 
               alt={item.name} 
-              style={{ 
-                width: 70, 
-                height: 70, 
-                objectFit: "cover", 
-                borderRadius: 8 
-              }} 
+              style={{ width: 70, height: 70, objectFit: "cover", borderRadius: 8 }} 
             />
             <div className="flex-grow-1">
               <div className="d-flex justify-content-between align-items-start mb-1">
@@ -75,12 +98,10 @@ export default function CartModal({
               </div>
               <div className="d-flex justify-content-between align-items-center">
                 <div className="d-flex align-items-center gap-2">
-                  <span className="text-muted small">Cant:</span>
                   <div className="d-flex align-items-center border rounded">
                     <button 
                       className="btn btn-sm btn-outline-secondary border-0 px-2"
-                      onClick={() => updateQty(item.id, item.quantity - 1)}
-                      aria-label="Reducir cantidad"
+                      onClick={() => updateQty(item.id, item.quantity, -1)}
                     >
                       −
                     </button>
@@ -89,8 +110,7 @@ export default function CartModal({
                     </span>
                     <button 
                       className="btn btn-sm btn-outline-secondary border-0 px-2"
-                      onClick={() => updateQty(item.id, item.quantity + 1)}
-                      aria-label="Aumentar cantidad"
+                      onClick={() => updateQty(item.id, item.quantity, 1)}
                     >
                       +
                     </button>
@@ -99,9 +119,8 @@ export default function CartModal({
                 <button 
                   className="btn btn-sm btn-outline-danger"
                   onClick={() => handleRemove(item.id)}
-                  aria-label="Eliminar producto"
                 >
-                  ×
+                  <i className="bi bi-trash"></i>
                 </button>
               </div>
             </div>
@@ -109,9 +128,7 @@ export default function CartModal({
         ))}
       </div>
 
-      {/* Resumen y acciones */}
       <div className="p-3 border-top">
-        {/* Desglose de precios */}
         <div className="mb-3">
           <div className="d-flex justify-content-between mb-2">
             <span>Subtotal:</span>
@@ -119,42 +136,22 @@ export default function CartModal({
           </div>
           <div className="d-flex justify-content-between mb-2">
             <span>Envío:</span>
-            <span>{state.total > 0 ? formatPrice(4000) : formatPrice(0)}</span>
+            <span>{formatPrice(shippingCost)}</span>
           </div>
           <hr />
           <div className="d-flex justify-content-between mb-3">
             <strong>Total:</strong>
-            <strong className="text-primary h5">
-              {formatPrice(totalWithShipping)}
-            </strong>
+            <strong className="text-primary h5">{formatPrice(totalWithShipping)}</strong>
           </div>
         </div>
 
-        {/* Botones de acción */}
         <div className="d-grid gap-2">
-          <button
-            className="btn btn-success"
-            onClick={() => {
-              // Aquí iría tu lógica de checkout real
-              alert("Procediendo al checkout...");
-              dispatch({ type: "CLEAR" });
-              onClose();
-            }}
-          >
+          <button className="btn btn-success" onClick={() => alert("Checkout...")}>
             <i className="bi bi-credit-card me-2"></i>
             Proceder al pago
           </button>
           
-          
-
-          <button 
-            className="btn btn-outline-danger"
-            onClick={() => {
-              if (confirm("¿Estás seguro de que quieres vaciar el carrito?")) {
-                dispatch({ type: "CLEAR" });
-              }
-            }}
-          >
+          <button className="btn btn-outline-danger" onClick={handleClearAll}>
             <i className="bi bi-trash me-2"></i>
             Vaciar carrito
           </button>

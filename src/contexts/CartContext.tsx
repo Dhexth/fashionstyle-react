@@ -1,44 +1,35 @@
 import React, { createContext, useReducer, useContext, ReactNode, useEffect } from "react";
 import { CartItem } from "../types/cart";
-import {
-  addToCart,
-  removeFromCart,
-  updateQuantity,
-  emptyCart,
-  getCartTotal,
-  initCart,
-} from "../services/cartService";
+import { cartApi } from "../services/cartServiceApi";
+import { getCartTotal } from "../services/cartService";
 
 type State = { items: CartItem[]; total: number };
 type Action =
+  | { type: "SET_CART"; payload: CartItem[] }
   | { type: "ADD"; payload: CartItem }
   | { type: "REMOVE"; payload: string }
   | { type: "UPDATE_QTY"; payload: { id: string; qty: number } }
   | { type: "CLEAR" };
 
-// ...existing code...
-export const CartContext = createContext<{
-  state: State;
-  dispatch: React.Dispatch<Action>;
-} | null>(null);
-// ...existing code...
+const CartContext = createContext<{ state: State; dispatch: React.Dispatch<Action> } | null>(null);
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
+    case "SET_CART":
+      return { items: action.payload, total: getCartTotal(action.payload) };
     case "ADD": {
-      const updated = addToCart(state.items, action.payload, action.payload.quantity);
-      return { items: updated, total: getCartTotal(updated) };
+      const items = [...state.items, action.payload];
+      return { items, total: getCartTotal(items) };
     }
     case "REMOVE": {
-      const updated = removeFromCart(state.items, action.payload);
-      return { items: updated, total: getCartTotal(updated) };
+      const items = state.items.filter(i => i.id !== action.payload);
+      return { items, total: getCartTotal(items) };
     }
     case "UPDATE_QTY": {
-      const updated = updateQuantity(state.items, action.payload.id, action.payload.qty);
-      return { items: updated, total: getCartTotal(updated) };
+      const items = state.items.map(i => i.id === action.payload.id ? { ...i, quantity: action.payload.qty } : i);
+      return { items, total: getCartTotal(items) };
     }
     case "CLEAR":
-      emptyCart();
       return { items: [], total: 0 };
     default:
       return state;
@@ -46,12 +37,14 @@ function reducer(state: State, action: Action): State {
 }
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [state, dispatch] = useReducer(reducer, initCart());
+  const [state, dispatch] = useReducer(reducer, { items: [], total: 0 });
 
-  // Persistencia en localStorage
+  // 🟢 SINCRONIZACIÓN INICIAL CON LARAGON
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(state.items));
-  }, [state.items]);
+    cartApi.fetchItems().then(items => {
+      dispatch({ type: "SET_CART", payload: items });
+    });
+  }, []);
 
   return <CartContext.Provider value={{ state, dispatch }}>{children}</CartContext.Provider>;
 };

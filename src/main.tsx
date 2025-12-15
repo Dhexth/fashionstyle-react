@@ -2,10 +2,12 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
-import { CartProvider } from "./contexts/CartContext";
-import { UserProvider } from "./contexts/UserContext";
+
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { CartProvider } from "./contexts/CartContext";
+// 🟢 La línea de ProductProvider ha sido eliminada de aquí
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/bootstrap-overrides.css";
 import "./styles/globals.css";
@@ -15,11 +17,9 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
-          <UserProvider>
-            <CartProvider>
-              <App />
-            </CartProvider>
-          </UserProvider>
+          <CartProvider>
+            <App />
+          </CartProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>
