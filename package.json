@@ -18,8 +18,12 @@
     "react-bootstrap": "^2.10.10",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.49.3",
+<<<<<<< HEAD
     "react-router-dom": "^6.26.1",
     "uuid": "^13.0.0",
+=======
+    "react-router-dom": "^6.30.2",
+>>>>>>> 75f8f3f15a27a3446e1090fabd83bb4f30218949
     "zod": "^4.1.12",
     "zustand": "^4.5.2"
   },
